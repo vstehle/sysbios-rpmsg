@@ -192,4 +192,46 @@ struct resource resources[] = {
        0, 0,0,0,0,"IPU_IVAHD_SL2"},
 };
 
+/* move these somewhere else... mainly they are here because I can't
+ * #include rsc_table.h somewhere else without getting a second
+ * 'struct resource resouces[]' table..
+ */
+#define ARRAY_SIZE(a) (sizeof((a)) / sizeof((a)[0]))
+
+u32 SyslinkMemUtils_VirtToPhys(u32 vaddr)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(resources); i++) {
+		u32 da  = resources[i].da_low;
+		u32 len = resources[i].len;
+		if ((da <= vaddr) && (vaddr < (da + len))) {
+			u32 pa = resources[i].pa_low;
+			return pa + (vaddr - da);
+		}
+	}
+
+	System_printf("invalid vaddr: %p\n", vaddr);
+
+	return ~0;
+}
+
+u32 SyslinkMemUtils_PhysToVirt(u32 paddr)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(resources); i++) {
+		u32 pa  = resources[i].pa_low;
+		u32 len = resources[i].len;
+		if ((pa <= paddr) && (paddr < (pa + len))) {
+			u32 da = resources[i].da_low;
+			return da + (paddr - pa);
+		}
+	}
+
+	System_printf("invalid paddr: %p\n", paddr);
+
+	return ~0;
+}
+
 #endif /* _RSC_TABLE_H_ */
