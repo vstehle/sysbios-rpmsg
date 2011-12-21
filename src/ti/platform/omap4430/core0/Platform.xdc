@@ -42,10 +42,12 @@ metaonly module Platform inherits xdc.platform.IPlatform {
             catalogName:    "ti.catalog.arm.cortexm3",
             deviceName:     "OMAP4430",
             externalMemoryMap: [
-                ["EXT_CODE", {name: "EXT_CODE", base: 0x00004000, len: 0x000FC000, space: "code", access: "RWX"}],
-                ["EXT_DATA", {name: "EXT_DATA", base: 0x80000000, len: 0x00080000, space: "data", access: "RW"}],
-                ["EXT_HEAP", {name: "EXT_HEAP", base: 0x80080000, len: 0x00060000, space: "data", access: "RW"}],
-                ["PM_DATA",  {name: "PM_DATA",  base: 0x800e0000, len: 0x00020000, space: "data", access: "RW"}],
+                ["EXT_CODE", {name: "EXT_CODE", base: 0x00004000, len: 0x003FC000, space: "code", access: "RWX"}],
+                ["PM_DATA",  {name: "PM_DATA",  base: 0x80000000, len: 0x00020000, space: "data", access: "RW"}],
+                // TODO: HEAP probably needs to be a bit bigger.. can we shave some off DATA or do we need to
+                // go up from 32MB DATA_SIZE?
+                ["EXT_DATA", {name: "EXT_DATA", base: 0x80020000, len: 0x00500000, space: "data", access: "RW"}],
+                ["EXT_HEAP", {name: "EXT_HEAP", base: 0x80520000, len: 0x01AE0000, space: "data", access: "RW"}],
             ],
     });
 
