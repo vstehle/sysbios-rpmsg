@@ -38,6 +38,7 @@ var System      = xdc.useModule('xdc.runtime.System');
 var SysMin      = xdc.useModule('xdc.runtime.SysMin');
 System.SupportProxy = SysMin;
 SysMin.bufSize  = 0x8000;
+SysMin.flushAtExit = false;
 
 /* Modules used in the virtqueue/MessageQCopy/ServiceMgr libraries: */
 var Semaphore   = xdc.useModule('ti.sysbios.knl.Semaphore');
