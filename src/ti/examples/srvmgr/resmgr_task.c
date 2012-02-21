@@ -62,6 +62,7 @@ void IpcResourceTaskFxn(UArg arg0, UArg arg1)
     IpcResource_Regulator regulator;
     IpcResource_Gpio gpio;
     IpcResource_Sdma sdma;
+    IpcResource_I2c i2c;
     IpcResource_ResHandle gptId;
     IpcResource_ResHandle ivaId, ivasq0Id, ivasq1Id;
     IpcResource_ConstraintData ivaConstraints;
@@ -75,6 +76,7 @@ void IpcResourceTaskFxn(UArg arg0, UArg arg1)
     IpcResource_ResHandle gpioId;
     IpcResource_ResHandle sdmaId;
     IpcResource_ResHandle ipuId;
+    IpcResource_ResHandle i2cId;
     IpcResource_ConstraintData ipuConstraints;
 
     System_printf("Connecting to resmgr server ...\n");
@@ -114,6 +116,20 @@ void IpcResourceTaskFxn(UArg arg0, UArg arg1)
 
     System_printf("Releasing GPT  %d\n", gpt.id);
     IpcResource_release(ipcResHandle, gptId);
+
+    Task_sleep(SLEEP_TICKS);
+
+    i2c.id = 2;
+
+    System_printf("Requesting i2c  %d\n", i2c.id);
+    status = IpcResource_request(ipcResHandle, &i2cId,
+                                 IpcResource_TYPE_I2C, &i2c);
+    System_printf("status %d\n", status);
+
+    Task_sleep(SLEEP_TICKS);
+
+    System_printf("Releasing i2c  %d\n", i2c.id);
+    IpcResource_release(ipcResHandle, i2cId);
 
     Task_sleep(SLEEP_TICKS);
 
