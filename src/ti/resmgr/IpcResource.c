@@ -209,6 +209,10 @@ Int IpcResource_request(IpcResource_Handle handle,
     IpcResource_Req *req = (Void *)act->data;
     IpcResource_Ack *ack = (Void *)msg;
     IpcResource_ReqAck *rack = (Void *)ack->data;
+    _IpcResource_Auxclk _auxclk;
+    IpcResource_Regulator *reg;
+    _IpcResource_Regulator _reg;
+    IpcResource_Auxclk *auxclk;
     UInt16 hlen = sizeof(*req) + sizeof(*act);
     UInt16 alen = sizeof(*ack);
     UInt16 rlen = IpcResource_resLen(type);
@@ -216,6 +220,12 @@ Int IpcResource_request(IpcResource_Handle handle,
     UInt32 remote;
     Int status;
     Char *name;
+    /* names to translate auxclk parent IDs */
+    Char *auxclkSrcName[] = {
+        "sys_clkin_ck",
+        "dpll_core_m3x2_ck",
+        "dpll_per_m3x2_ck",
+    };
 
     if (!handle || !resHandle) {
         System_printf("IpcResource_request: Invalid paramaters\n");
@@ -237,6 +247,36 @@ Int IpcResource_request(IpcResource_Handle handle,
 
     strncpy(req->resName, name, 16);
     act->action = IpcResource_REQ_TYPE_ALLOC;
+
+    switch(type) {
+    case IpcResource_TYPE_AUXCLK:
+        auxclk = resParams;
+	/* build auxclk name based on the ID */
+        sprintf(_auxclk.name, "auxclk%d_ck", auxclk->clkId);
+        _auxclk.clkRate = auxclk->clkRate;
+
+        if (auxclk->parentSrcClk >=
+                sizeof(auxclkSrcName) / sizeof(*auxclkSrcName))
+            return IpcResource_E_INVALARGS;
+
+        strcpy(_auxclk.parentName, auxclkSrcName[auxclk->parentSrcClk]);
+        _auxclk.parentSrcClkRate = auxclk->parentSrcClkRate;
+	resParams = &_auxclk;
+	rlen = sizeof(_auxclk);
+        break;
+    case IpcResource_TYPE_REGULATOR:
+        reg = resParams;
+
+	/* we only support cam2pwr regulator at this moment */
+        if (reg->regulatorId != 1)
+            return IpcResource_E_INVALARGS;
+
+        strcpy(_reg.name, "cam2pwr");
+        _reg.minUV = reg->minUV;
+        _reg.maxUV = reg->maxUV;
+	resParams = &_reg;
+	rlen = sizeof(_reg);
+    }
 
     memcpy(req->resParams, resParams, rlen);
     Semaphore_pend(handle->sem, BIOS_WAIT_FOREVER);

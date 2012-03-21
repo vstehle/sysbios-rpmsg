@@ -96,6 +96,19 @@ typedef struct {
     Char   data[];
 } IpcResource_Ack;
 
+typedef struct {
+    Char name[24];
+    UInt32 clkRate;
+    Char parentName[24];
+    UInt32 parentSrcClkRate;
+} _IpcResource_Auxclk;
+
+typedef struct {
+    Char name[16];
+    UInt32 minUV;
+    UInt32 maxUV;
+} _IpcResource_Regulator;
+
 /*!
  *  @brief  IpcResource_Object type
  */
