@@ -66,18 +66,34 @@ typedef enum {
 } IpcResource_ReqType;
 
 typedef struct {
-    UInt32 resType;
-    UInt32 reqType;
-    UInt32 resHandle;
+    Char   resName[16];
     Char   resParams[];
 } IpcResource_Req;
 
 typedef struct {
-    UInt32 status;
-    UInt32 resType;
+    UInt32 resHandle;
+} IpcResource_Rel;
+
+typedef struct {
+    UInt32 resHandle;
+    IpcResource_ConstraintData cdata;
+} IpcResource_Constraint;
+
+typedef struct {
+    UInt32 action;
+    Char   data[];
+} IpcResource_Act;
+
+typedef struct {
     UInt32 resHandle;
     UInt32 base;
     Char   resParams[];
+} IpcResource_ReqAck;
+
+typedef struct {
+    UInt32 action;
+    UInt32 status;
+    Char   data[];
 } IpcResource_Ack;
 
 /*!
