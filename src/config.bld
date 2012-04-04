@@ -34,6 +34,14 @@
  *  Sample Build configuration script
  */
 
+/************************************
+* Setup of SL2 memory for stacks and EDMA usage
+************************************/
+
+var lockSize = 1024*64	// L2 cache is 128kB, reserve half of it
+var commonOpts = " -DSL2_LOCK_SIZE="+lockSize
+    commonOpts += " -DSL2_START_ADDR=0x10900000 "
+
 /* Exported tools locations to supercede defaults */
 var arm_cgtools_rootdir = java.lang.System.getenv("TMS470CGTOOLPATH");
 var c6x_cgtools_rootdir = java.lang.System.getenv("C6000CGTOOLPATH");
@@ -43,6 +51,7 @@ var build_smp = java.lang.System.getenv("BUILD_SMP");
 var C64T = xdc.useModule('ti.targets.elf.C64T');
 C64T.rootDir = c6x_cgtools_rootdir;
 C64T.ccOpts.suffix += " -mi10 -mo -pds=71 -DTARGET_BUILD=BUILD_OMAP4 --gcc";
+C64T.ccOpts.suffix  += commonOpts;
 C64T.lnkOpts.prefix += " -e=ti_sysbios_family_c64p_Hwi0";
 /* Set default platform and list of all interested platforms for c64T */
 C64T.platforms = [
