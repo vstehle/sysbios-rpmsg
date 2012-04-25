@@ -109,6 +109,10 @@ typedef struct {
     UInt32 maxUV;
 } _IpcResource_Regulator;
 
+typedef struct {
+    Char name[16];
+} _IpcResource_Rproc;
+
 /*!
  *  @brief  IpcResource_Object type
  */

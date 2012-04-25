@@ -85,8 +85,8 @@ static Char *IpcResource_names[] = {
     "regulator",
     "gpio",
     "omap-sdma",
-    "ipu",
-    "dsp",
+    "ipu_c0",
+    "dsp_c0",
     "i2c"
 };
 
@@ -212,6 +212,7 @@ Int IpcResource_request(IpcResource_Handle handle,
     _IpcResource_Auxclk _auxclk;
     IpcResource_Regulator *reg;
     _IpcResource_Regulator _reg;
+    _IpcResource_Rproc _rproc;
     IpcResource_Auxclk *auxclk;
     UInt16 hlen = sizeof(*req) + sizeof(*act);
     UInt16 alen = sizeof(*ack);
@@ -276,6 +277,13 @@ Int IpcResource_request(IpcResource_Handle handle,
         _reg.maxUV = reg->maxUV;
 	resParams = &_reg;
 	rlen = sizeof(_reg);
+        break;
+    case IpcResource_TYPE_IPU:
+    case IpcResource_TYPE_DSP:
+        strcpy(_rproc.name, req->resName);
+        strncpy(req->resName, "rproc", 16);
+	resParams = &_rproc;
+	rlen = sizeof(_rproc);
     }
 
     memcpy(req->resParams, resParams, rlen);
