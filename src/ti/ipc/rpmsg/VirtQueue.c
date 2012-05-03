@@ -408,6 +408,10 @@ Void VirtQueue_isr(UArg msg)
                 if (OffloadM3_processSysM3Tasks(msg))
                     return;
 #endif
+                /* Don't let unknown messages to pass as a virtqueue index */
+                if (msg >= NUM_QUEUES) {
+                    return;
+                }
 
                 /*
                  *  If the message isn't one of the above, it's either part of the
