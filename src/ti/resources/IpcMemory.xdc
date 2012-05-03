@@ -71,19 +71,18 @@ module IpcMemory {
     const Int E_NOTFOUND = -1;
 
     /*!
-     *  @def       IpcMemory_Resource
+     *  @def       IpcMemory_MemEntry
      *
-     *  @brief     A Resource Table record
+     *  @brief     A Resource Table memory type record
      */
-    struct Resource {
+    struct MemEntry {
         UInt32 type;
-        UInt32 da_low;       /* Device Virtual Address */
-        UInt32 da_high;
-        UInt32 pa_low;       /* Physical Address */
-        UInt32 pa_high;
-        UInt32 size;
+        UInt32 da;       /* Device Virtual Address */
+        UInt32 pa;       /* Physical Address */
+        UInt32 len;
+        UInt32 flags;
         UInt32 reserved;
-        Char   name[48];
+        Char   name[32];
     };
 
     /*!
@@ -115,10 +114,10 @@ internal:   /* not for client use */
      *  @brief      Return the i-th entry in the resource table
      *
      */
-    Resource *getEntry(UInt entry);
+    MemEntry *getEntry(UInt index);
 
     struct Module_State {
-        UInt32    *pSize;  /* Number of resources in the Resource Table */
-        Resource  *pTable; /* IpcMemory Resource Table pointer */
+        UInt32  *pSize;   /* Number of resources in the Resource Table */
+        Void    *pTable;  /* IpcMemory Resource Table pointer */
     };
 }

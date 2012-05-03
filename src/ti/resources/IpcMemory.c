@@ -38,19 +38,32 @@
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Startup.h>
 
-#include <ti/resources/rsc_table.h>
+#include <ti/resources/rsc_types.h>
 #include "package/internal/IpcMemory.xdc.h"
 
 
 /*
  *  ======== IpcMemory_getEntry ========
  */
-IpcMemory_Resource *IpcMemory_getEntry(UInt entry)
+IpcMemory_MemEntry *IpcMemory_getEntry(UInt index)
 {
-    if (entry >= *IpcMemory_module->pSize) {
+    struct resource_table *table = (struct resource_table *)
+                                            (IpcMemory_module->pTable);
+    UInt32 offset;
+    UInt32 *type;
+    IpcMemory_MemEntry *entry = NULL;
+
+    if (index >= table->num) {
         return (NULL);
     }
-    return (IpcMemory_module->pTable + entry);
+
+    offset = (UInt32)((Char *)table + table->offset[index]);
+    type = (UInt32 *)offset;
+    if (*type == TYPE_CARVEOUT || *type == TYPE_DEVMEM) {
+        entry = (IpcMemory_MemEntry *) ((Char *)offset);
+    }
+
+    return (entry);
 }
 
 /*
@@ -75,21 +88,19 @@ Int IpcMemory_virtToPhys(UInt32 va, UInt32 *pa)
 {
     UInt32 i;
     UInt32 offset;
-    IpcMemory_Resource *rsc;
+    IpcMemory_MemEntry *entry;
+
+    *pa = NULL;
 
     for (i = 0; i < *IpcMemory_module->pSize; i++) {
-        rsc = IpcMemory_getEntry(i);
-        if (rsc->type == TYPE_DEVMEM ||
-            rsc->type == TYPE_CARVEOUT) {
-            if (va >= rsc->da_low &&
-                va < (rsc->da_low + rsc->size)) {
-                offset = va - rsc->da_low;
-                *pa = rsc->pa_low + offset;
+        entry = IpcMemory_getEntry(i);
+        if (entry && va >= entry->da && va < (entry->da + entry->len)) {
+                offset = va - entry->da;
+                *pa = entry->pa + offset;
                 return (IpcMemory_S_SUCCESS);
-            }
         }
     }
-    *pa = NULL;
+
     return (IpcMemory_E_NOTFOUND);
 }
 
@@ -100,20 +111,18 @@ Int IpcMemory_physToVirt(UInt32 pa, UInt32 *va)
 {
     UInt32 i;
     UInt32 offset;
-    IpcMemory_Resource *rsc;
+    IpcMemory_MemEntry *entry;
+
+    *va = NULL;
 
     for (i = 0; i < *IpcMemory_module->pSize; i++) {
-        rsc = IpcMemory_getEntry(i);
-        if (rsc->type == TYPE_DEVMEM ||
-            rsc->type == TYPE_CARVEOUT) {
-            if (pa >= rsc->pa_low &&
-                pa < (rsc->pa_low + rsc->size)) {
-                offset = pa - rsc->pa_low;
-                *va = rsc->da_low + offset;
+        entry = IpcMemory_getEntry(i);
+        if (entry && pa >= entry->pa && pa < (entry->pa + entry->len)) {
+                offset = pa - entry->pa;
+                *va = entry->da + offset;
                 return (IpcMemory_S_SUCCESS);
-            }
         }
     }
-    *va = NULL;
+
     return (IpcMemory_E_NOTFOUND);
 }
