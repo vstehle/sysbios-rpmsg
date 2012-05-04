@@ -41,6 +41,10 @@
 #define SMP
 %}
 
+%if (prog.platformName.match(/dsp/)) {
+#define DSP
+%}
+
 %var MultiProc = xdc.module('ti.sdo.utils.MultiProc');
 %if (MultiProc.id == MultiProc.getIdMeta("CORE0")) {
 
