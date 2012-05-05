@@ -135,9 +135,9 @@ void IpcResourceTaskFxn(UArg arg0, UArg arg1)
     Task_sleep(SLEEP_TICKS);
 
     auxclk.clkId = 3;
-    auxclk.clkRate = 24;
+    auxclk.clkRate = 24000000;
     auxclk.parentSrcClk = 0x2;
-    auxclk.parentSrcClkRate = 192;
+    auxclk.parentSrcClkRate = 192000000;
 
     System_printf("Requesting AuxClk  %d\n", auxclk.clkId);
     status = IpcResource_request(ipcResHandle, &auxClkId,
@@ -152,9 +152,9 @@ void IpcResourceTaskFxn(UArg arg0, UArg arg1)
     Task_sleep(SLEEP_TICKS);
 
     auxclk.clkId = 1;
-    auxclk.clkRate = 24;
+    auxclk.clkRate = 24000000;
     auxclk.parentSrcClk = 0x2;
-    auxclk.parentSrcClkRate = 192;
+    auxclk.parentSrcClkRate = 192000000;
 
 
     System_printf("Requesting AuxClk  %d\n", auxclk.clkId);
