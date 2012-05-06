@@ -94,7 +94,12 @@
 #define PHYS_MEM_IOBUFS         0xBA300000
 
 #define IPU_MEM_IPC_VRING       0xA0000000
+
+#ifdef OMAP5
+#define PHYS_MEM_IPC_VRING      0xA5000000
+#else
 #define PHYS_MEM_IPC_VRING      0xA9000000
+#endif
 
 #define RPMSG_VRING0_DA         0xA0000000
 #define RPMSG_VRING1_DA         0xA0004000
