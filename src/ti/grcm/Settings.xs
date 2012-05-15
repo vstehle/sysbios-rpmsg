@@ -48,4 +48,9 @@ function module$validate()
         throw new Error("ipc config param is undefined, it must be"
         + " assigned a value by the application config script.");
     }
+    else if (this.ipc == this.IpcSupport_ti_syslink_ipc) {
+        throw new Error("ipc config param cannot be set to "
+        + "IpcSupport_ti_syslink_ipc, it is only supported with "
+        + "IpcSupport_ti_sdo_ipc");
+    }
 }
