@@ -147,7 +147,7 @@
 #define DUCATI_TO_TESLA_RPMSG_FEATURES (1 << VIRTIO_RPMSG_F_NS || 1 << VIRTIO_RING_F_SYMMETRIC)
 
 //extern char * ti_trace_SysMin_Module_State_0_outbuf__A;
-#define TRACEBUFADDR (UInt32)&ti_trace_SysMin_Module_State_0_outbuf__A
+#define TRACEBUFADDR (UInt32)&xdc_runtime_SysMin_Module_State_0_outbuf__A
 
 #pragma DATA_SECTION(resources, ".resource_table")
 #pragma DATA_ALIGN(resources, 4096)
