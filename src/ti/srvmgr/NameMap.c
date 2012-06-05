@@ -31,6 +31,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
@@ -56,12 +57,18 @@ enum rpmsg_ns_flags {
 static void sendMessage(Char * name, UInt32 port, enum rpmsg_ns_flags flags)
 {
     struct rpmsg_ns_msg nsMsg;
+    int s;
 
     strncpy(nsMsg.name, name, RPMSG_NAME_SIZE);
     nsMsg.addr = port;
     nsMsg.flags = flags;
 
-    MessageQCopy_send(MultiProc_getId("HOST"), 53, port, &nsMsg, sizeof(nsMsg));
+    s = MessageQCopy_send(MultiProc_getId("HOST"), 53, port, &nsMsg, sizeof(nsMsg));
+
+    if (s < 0) {
+        System_printf("Fatal ERROR in NameMap sendMessage: MessageQCopy_send() returned %d! Aborting...\n", s);
+        abort();
+    }
 }
 
 void NameMap_register(Char * name, UInt32 port)
