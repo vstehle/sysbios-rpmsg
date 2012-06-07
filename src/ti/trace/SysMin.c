@@ -16,6 +16,7 @@
 
 #include <xdc/runtime/Startup.h>
 #include <xdc/runtime/Gate.h>
+#include <xdc/runtime/System.h>
 
 #ifdef SMP
 #include <ti/sysbios/BIOS.h>
@@ -172,7 +173,7 @@ Void SysMin_putch(Char ch)
             uSec  = Clock_getTicks() * Clock_tickPeriod;
             SysMin_output('[');
             if (uSec) {
-                sprintf(timeStamp, "%17llu\0", uSec);
+                System_sprintf(timeStamp, "%17u\0", uSec);
             }
             for (index = startIdx; index < endIdx; index++) {
                 if (index == decPtIdx) {
