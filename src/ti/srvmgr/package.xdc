@@ -34,6 +34,8 @@
  *
  */
 
+requires ti.grcm;
+
 /*!
  *  ======== ti.srvmgr ========
  *  Inter processor communication.
